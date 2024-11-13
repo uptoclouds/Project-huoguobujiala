@@ -25,10 +25,10 @@ const page = computed(() => props.page)
 onMounted(() => {
   watchEffect(() => {
     EventService.getEvents(itemsPerPage.value, page.value)
-      .then((response) => {
-        events.value = response.data
-        totalEvents.value = response.headers['x-total-count']
-      })
+    .then(({ evented, total }) => { // 确保这里解构出 events 和 totalEvents
+            events.value = evented;
+            totalEvents.value = total; // 赋值 totalEvents 给 totalEvents.value
+          })
       .catch((error) => {
         console.error('There was an error!', error)
       })
@@ -46,10 +46,10 @@ const safeItemsPerPage = computed({
 </script>
 
 <template>
-  <h1 class="text-3xl font-bold text-center my-6">Events For Good</h1>
+  <h1 class="text-3xl font-bold text-center my-6">Country information</h1>
   <div class="flex flex-col items-center">
     <EventCard v-for="event in events" :key="event.id" :event="event" />
-    <label>Please enter the number of events per page</label>
+    <label>Please enter the number of countries per page</label>
     <input
       v-model="safeItemsPerPage"
       type="number"
